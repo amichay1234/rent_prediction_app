@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="he">
+<head>
+    <meta charset="UTF-8">
+    <title>חיזוי שכר דירה בתל אביב</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(to bottom, #f7f7f7, #e0e0e0);
+            text-align: center;
+            padding: 40px;
+            direction: rtl;
+        }
+        .container {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            max-width: 600px;
+            margin: auto;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            margin-bottom: 20px;
+            color: #444;
+        }
+        input, select {
+            width: 90%;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .result {
+            margin-top: 25px;
+            font-size: 22px;
+            font-weight: bold;
+            color: #333;
+        }
+        .image-container {
+            margin-bottom: 20px;
+        }
+        .image-container img {
+            width: 100%;
+            border-radius: 10px;
+        }
+    </style>
+    <script>
+        function validateForm(event) {
+            const form = document.querySelector("form");
+            const requiredFields = form.querySelectorAll("input[required], select[required]");
+            let valid = true;
+
+            requiredFields.forEach(field => {
+                if (field.value.trim() === "") {
+                    valid = false;
+                }
+            });
+
+            if (!valid) {
+                event.preventDefault();
+                alert("אנא מלא/י את כל השדות החיוניים לפני השליחה.");
+            }
+        }
+
+        window.addEventListener("DOMContentLoaded", function () {
+            document.querySelector("form").addEventListener("submit", validateForm);
+        });
+    </script>
+</head>
+<body>
+<div class="container">
+    <div class="image-container">
+        <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=60" alt="דירה להשכרה בתל אביב">
+    </div>
+    <h1>חיזוי מחיר שכירות בתל אביב</h1>
+    <form action="/predict" method="post">
+        <input type="text" name="address" placeholder="כתובת" required>
+        <select name="property_type" required>
+            <option value="">בחר סוג נכס</option>
+            <option value="דירה">דירה</option>
+            <option value="דירת גן">דירת גן</option>
+            <option value="דופלקס">דופלקס</option>
+            <option value="גג/פנטהאוז">גג/פנטהאוז</option>
+            <option value="סטודיו/לופט">סטודיו/לופט</option>
+            <option value="פרטי">פרטי</option>
+            <option value="סאבלט">סאבלט</option>
+            <option value="יחידת דיור">יחידת דיור</option>
+        </select>
+        <input type="text" name="neighborhood" placeholder="שכונה" required>
+        <input type="number" step="0.1" name="room_num" placeholder="מספר חדרים" required>
+        <input type="number" name="floor_clean" placeholder="קומה" required>
+        <input type="number" name="area" placeholder="שטח הדירה במ״ר" required>
+        <input type="number" name="garden_area_filled" placeholder="שטח גינה" required>
+        <select name="entering_category" required>
+            <option value="">כניסה</option>
+            <option value="immediate">מיידי</option>
+            <option value="flexible">גמיש</option>
+            <option value="in_future">בעתיד</option>
+        </select>
+        <select name="num_of_payments" required>
+            <option value="">מספר תשלומים</option>
+            {% for i in range(1, 13) %}
+            <option value="{{ i }}">{{ i }}</option>
+            {% endfor %}
+        </select>
+        <input type="number" name="monthly_arnona" placeholder="ארנונה חודשית" required>
+        <input type="number" name="building_tax" placeholder="דמי ועד בניין" required>
+        <input type="number" name="total_floors" placeholder="סה״כ קומות בבניין" required>
+        <input type="number" name="num_of_images" placeholder="מספר תמונות במודעה" required>
+        <input type="number" name="distance_from_center" placeholder="מרחק מהמרכז במטרים" required>
+
+        <!-- צ׳קבוקסים בוליאניים -->
+        <label><input type="checkbox" name="has_parking"> חניה</label><br>
+        <label><input type="checkbox" name="has_storage"> מחסן</label><br>
+        <label><input type="checkbox" name="elevator"> מעלית</label><br>
+        <label><input type="checkbox" name="ac"> מזגן</label><br>
+        <label><input type="checkbox" name="handicap"> נגישות</label><br>
+        <label><input type="checkbox" name="has_bars"> סורגים</label><br>
+        <label><input type="checkbox" name="has_safe_room"> ממ״ד</label><br>
+        <label><input type="checkbox" name="has_balcony"> מרפסת</label><br>
+        <label><input type="checkbox" name="is_furnished"> מרוהט</label><br>
+        <label><input type="checkbox" name="is_renovated"> משופץ</label><br>
+
+        <br><button type="submit">הערך שכר דירה</button>
+    </form>
+
+    {% if prediction %}
+    <div class="result">
+         מחיר חיזוי: {{ prediction }} ₪
+    </div>
+    {% endif %}
+</div>
+</body>
+</html>
